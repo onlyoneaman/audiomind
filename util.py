@@ -2,48 +2,74 @@ from dotenv import load_dotenv
 import os
 import time
 import argparse
-
-from helpers.audio_utils import transcribe
-from helpers.config import DEFAULT_TRANSCRIPT_DIR, DEFAULT_AUDIO_DIR, DEFAULT_AUDIO
-
-load_dotenv()
+import yaml
 
 
-def get_env_var(var_name):
+def get_env_var(var_name, check_exists=False):
     """Fetch and validate an environment variable"""
     var_value = os.getenv(var_name)
-    if var_value is None:
+    if check_exists and not var_value:
+        raise EnvironmentError(f"{var_name} is not set")
+    if var_value is None and check_exists:
         raise EnvironmentError(f"{var_name} is not set")
     return var_value
 
 
-def person_info(person_file="person.txt"):
-    if not os.path.exists(person_file):
-        print("Error: Person file does not exist.")
+def person_info(person_file=None):
+    try:
+        if person_file is None:
+            person_file = get_env_var("USER_FILE")
+        if not os.path.exists(person_file):
+            print("Error: Person file does not exist.")
+            return None
+        with open(person_file, "r") as f:
+            return f.read()
+    except Exception as e:
+        print("Error: ", e)
         return None
-    with open(person_file, "r") as f:
-        return f.read()
 
 
-def store_results(basename, title_description, summary, results_folder="results"):
+def store_results(basename, title_description, summary):
+    results_folder = get_env_var("RESULTS_DIR")
     os.makedirs(results_folder, exist_ok=True)
     filename = f"{results_folder}/{int(time.time())}_{basename}.md"
     with open(filename, "w") as f:
         f.write(f"{title_description}\n\n{summary}\n")
-
-
-def transcribe_and_store(audio_file, transcript_file, transcript_folder=DEFAULT_TRANSCRIPT_DIR):
-    transcript = transcribe(audio_file, transcript_file)
-    os.makedirs(transcript_folder, exist_ok=True)
-    with open(transcript_file, "w") as f:
-        f.write(transcript)
-    return transcript
+    return filename
 
 
 def get_args():
     parser = argparse.ArgumentParser(description='Process some flags for the script.')
-    parser.add_argument('--main_file_name', default=DEFAULT_AUDIO, help='The main file name to process')
-    parser.add_argument('--audio_dir', default=DEFAULT_AUDIO_DIR, help='The directory where audio files are stored')
-    parser.add_argument('--transcript_dir', default=DEFAULT_TRANSCRIPT_DIR, help='The directory where transcripts will be saved')
+    parser.add_argument('--main_file_name', help='The main file name to process')
+    parser.add_argument('--audio_dir', help='The directory where audio files are stored')
+    parser.add_argument('--transcript_dir', help='The directory where transcripts will be saved')
+    parser.add_argument('--whisper_model', help='The whisper model to use')
+    parser.add_argument('--openai_model', help='The AI model to use')
     args = parser.parse_args()
+    if args.main_file_name is not None:
+        os.environ["AUDIO_FILE"] = args.main_file_name
+    if args.audio_dir is not None:
+        os.environ["AUDIO_DIR"] = args.audio_dir
+    if args.transcript_dir is not None:
+        os.environ["TRANSCRIPT_DIR"] = args.transcript_dir
+    if args.whisper_model is not None:
+        os.environ["WHISPER_MODEL"] = args.whisper_model
+    if args.openai_model is not None:
+        os.environ["OPENAI_MODEL"] = args.openai_model
     return args
+
+
+def load_yaml_config(file_path):
+    with open(file_path, 'r') as file:
+        return yaml.safe_load(file)
+
+
+def load_config():
+    load_dotenv()
+    try:
+        config = load_yaml_config('./helpers/config.yaml')
+        for key, value in config.items():
+            os.environ.setdefault(key, value)
+    except Exception as e:
+        print(e)
+        print("Error loading config file.")

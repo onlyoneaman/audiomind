@@ -88,7 +88,7 @@ The description should be a single paragraph. Keep description below 250 charact
 Text:
 {text}
         
-Return a Markdown like
+Return a Markdown in below format:
 # TITLE HERE
 #### DESCRIPTION HERE
 """,

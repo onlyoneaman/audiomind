@@ -1,0 +1,12 @@
+AUDIO_FILE: "How-will-AI-change-the-world.mp3"
+AUDIO_DIR: "examples"
+TRANSCRIPT_DIR: "transcripts"
+
+WHISPER_MODEL: "base"
+OPENAI_MODEL: "gpt-4"
+
+RESULTS_DIR: "results"
+
+DREAMBOAT_BASE_URL: "https://dev.dreamboat.ai/v1/proxy"
+
+USER_FILE: "person.txt"

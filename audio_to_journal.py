@@ -7,14 +7,15 @@ from langchain.prompts import PromptTemplate
 
 from prompts import PROMPT_TEMPLATES
 
-from util import person_info, store_results, get_args, transcribe_and_store
+from util import load_config, person_info, store_results, get_args, get_env_var
+from helpers.audio_utils import transcribe_and_store
 from helpers.llm_util import get_text_splitter, initialize_llm
 
 
 def transcribe_file(audio_file, transcript_file, transcript_dir):
     start_time = time.time()
     print("Started transcribing...")
-    transcript = transcribe_and_store(audio_file, transcript_file, transcript_folder=transcript_dir)
+    transcript = transcribe_and_store(audio_file, transcript_file, transcript_dir)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Transcribing Done. Time taken: {elapsed_time:.2f} seconds")
@@ -88,36 +89,44 @@ def summarize_doc(llm, transcript, person_details, base_name):
     print(f"Generated Title. Time taken: {elapsed_time:.2f}s")
     print("Title, description: ", title_description)
 
-    store_results(base_name, title_description, summary)
+    result_filename = store_results(base_name, title_description, summary)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Summarizing Done. Time taken: {elapsed_time:.2f} seconds")
+    return result_filename
+
+
+def check():
+    main_envs = ["AUDIO_FILE", "AUDIO_DIR", "TRANSCRIPT_DIR", "WHISPER_MODEL", "OPENAI_MODEL", "RESULTS_DIR"]
+    return [env for env in main_envs if get_env_var(env, check_exists=True) is None]
 
 
 def main():
     try:
-        args = get_args()
+        load_config()
+        get_args()
+        check()
         start_time = time.time()
-        main_file_name = args.main_file_name
-        transcript_dir = args.transcript_dir
-        audio_file = f"./{args.audio_dir}/{args.main_file_name}"
+        main_file_name = get_env_var("AUDIO_FILE")
+        transcript_dir = get_env_var("TRANSCRIPT_DIR")
+        audio_dir = get_env_var("AUDIO_DIR")
+        audio_file = f"./{audio_dir}/{main_file_name}"
         base_name = os.path.splitext(os.path.basename(main_file_name))[0]
-        transcript_filename = f"./{transcript_dir}/{base_name}.txt"
+        transcript_filename = f"./{transcript_dir}/{audio_dir}_{base_name}.txt"
+
         print("Started processing...")
-        print("File: ", audio_file)
         llm = initialize_llm()
         details = person_info()
 
-        print(llm)
-        return 1
-
         transcript = transcribe_file(audio_file, transcript_filename, transcript_dir)
-        summarize_doc(llm, transcript, details, base_name)
+
+        result_filename = summarize_doc(llm, transcript, details, base_name)
+
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Done. Time taken: {elapsed_time:.2f} seconds")
-        print("Check Results at: ", f"./results/{base_name}.md")
+        print("Check Results at: ", result_filename)
     except Exception as e:
         print(e)
 
