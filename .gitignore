@@ -1,0 +1,10 @@
+-.env.template
+.env
+.venv/
+__pycache__/
+results/
+audios/
+transcripts/
+person.main.txt
+.idea/
+.code/
