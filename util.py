@@ -3,13 +3,11 @@ import os
 import time
 import argparse
 
-from audio_utils import transcribe
+from helpers.audio_utils import transcribe
+from helpers.config import DEFAULT_TRANSCRIPT_DIR, DEFAULT_AUDIO_DIR, DEFAULT_AUDIO
 
 load_dotenv()
 
-DEFAULT_AUDIO = "How-will-AI-change-the-world.mp3"
-DEFAULT_AUDIO_DIR = "examples"
-DEFAULT_TRANSCRIPT_DIR = "transcripts"
 
 def get_env_var(var_name):
     """Fetch and validate an environment variable"""
@@ -18,6 +16,7 @@ def get_env_var(var_name):
         raise EnvironmentError(f"{var_name} is not set")
     return var_value
 
+
 def person_info(person_file="person.txt"):
     if not os.path.exists(person_file):
         print("Error: Person file does not exist.")
@@ -25,11 +24,13 @@ def person_info(person_file="person.txt"):
     with open(person_file, "r") as f:
         return f.read()
 
+
 def store_results(basename, title_description, summary, results_folder="results"):
     os.makedirs(results_folder, exist_ok=True)
     filename = f"{results_folder}/{int(time.time())}_{basename}.md"
     with open(filename, "w") as f:
         f.write(f"{title_description}\n\n{summary}\n")
+
 
 def transcribe_and_store(audio_file, transcript_file, transcript_folder=DEFAULT_TRANSCRIPT_DIR):
     transcript = transcribe(audio_file, transcript_file)
@@ -37,6 +38,7 @@ def transcribe_and_store(audio_file, transcript_file, transcript_folder=DEFAULT_
     with open(transcript_file, "w") as f:
         f.write(transcript)
     return transcript
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Process some flags for the script.')

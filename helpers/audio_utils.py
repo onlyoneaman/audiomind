@@ -2,6 +2,9 @@ import os
 import errno
 import whisper
 
+from helpers.config import DEFAULT_WHISPER_MODEL
+
+
 def transcribe(audio_file, transcript_file):
     if os.path.exists(transcript_file):
         with open(transcript_file, "r") as f:
@@ -10,5 +13,5 @@ def transcribe(audio_file, transcript_file):
                 return transcript
     if not os.path.exists(audio_file):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), audio_file)
-    model = whisper.load_model("base", in_memory=True)
+    model = whisper.load_model(DEFAULT_WHISPER_MODEL, in_memory=True)
     return model.transcribe(audio_file, verbose=False)["text"]
