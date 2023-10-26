@@ -28,8 +28,8 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/onlyoneaman/AudioIntellect.git
-    cd AudioIntellect
+    git clone https://github.com/onlyoneaman/audiomind.git
+    cd audiomind
     ```
 
 2. **Create a Virtual Environment**
@@ -93,4 +93,4 @@ MIT
 
 ---
 
-Enjoy using AudioIntellect!
+Enjoy using AudioMind!
