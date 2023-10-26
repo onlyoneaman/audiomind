@@ -1,5 +1,4 @@
-AUDIO_FILE: "How-will-AI-change-the-world.mp3"
-AUDIO_DIR: "examples"
+AUDIO_FILE: "./examples/How-will-AI-change-the-world.mp3"
 TRANSCRIPT_DIR: "transcripts"
 
 WHISPER_MODEL: "base"
@@ -11,4 +10,6 @@ DREAMBOAT_BASE_URL: "https://dev.dreamboat.ai/v1/proxy"
 
 USER_FILE: "person.txt"
 
-FORCE_TRANSCRIPT: "false"
+FORCE_TRANSCRIPT: "0"
+
+USE_WHISPER_API: "1"

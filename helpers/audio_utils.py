@@ -1,30 +1,78 @@
 import os
 import errno
 import whisper
+import json
+import openai
 
-from util import get_env_var
+from util import get_env_var, get_main_file_name
+from pydub.utils import mediainfo
 
 
-def transcribe_and_store(audio_file, transcript_file, transcript_folder):
-    if transcript_folder is None:
-        transcript_folder = get_env_var("TRANSCRIPT_DIR")
+def get_audio_length(audio_file):
+    info = mediainfo(audio_file)
+    length = float(info["duration"])
+    return length
+
+
+def calculate_transcription_cost(audio_file):
+    audio_length = get_audio_length(audio_file)
+    cost_per_second = 0.006 / 60
+    total_cost = audio_length * cost_per_second
+    decimal_places = len(str(cost_per_second).split('.')[1])
+    print(f"Length of the audio file: {audio_length:.2f} seconds")
+    print(f"Total transcription cost: ${total_cost:.{decimal_places}f}")
+    return total_cost
+
+
+def transcribe_and_store(audio_file):
+    transcript_dir = get_env_var("TRANSCRIPT_DIR")
+    os.makedirs(transcript_dir, exist_ok=True)
+    main_file = get_main_file_name(audio_file)
+    transcript_file = f"./{transcript_dir}/{main_file}.txt"
     transcript = transcribe(audio_file, transcript_file)
-    os.makedirs(transcript_folder, exist_ok=True)
-    with open(transcript_file, "w") as f:
-        f.write(transcript)
-    return transcript
+    try:
+        with open(transcript_file, "w") as f:
+            if isinstance(transcript, dict):
+                json.dump(transcript, f)
+            else:
+                f.write(transcript)
+        return transcript
+    except Exception as e:
+        print("Error: ", e)
+        return transcript
 
 
 def transcribe(audio_file, transcript_file):
-    if get_env_var("FORCE_TRANSCRIPT") != "true":
+    if get_env_var("FORCE_TRANSCRIPT") != "1":
         if os.path.exists(transcript_file):
             with open(transcript_file, "r") as f:
                 transcript = f.read()
                 if len(transcript) > 0:
-                    print("Transcript found.")
+                    print("Transcript found in file. Skipping transcription.")
                     return transcript
     if not os.path.exists(audio_file):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), audio_file)
+
+    if get_env_var("USE_WHISPER_API") == "1":
+        return transcribe_openai_api(audio_file)
+    result = transcribe_whisper_ondevice(audio_file)
+    return result
+
+
+def transcribe_openai_api(audio_file):
+    print("Using OpenAI API to transcribe audio file.")
+    calculate_transcription_cost(audio_file)
+    audio = open(audio_file, "rb")
+    transcript = openai.Audio.transcribe("whisper-1", audio)
+    result = transcript["text"]
+    return result
+
+
+def transcribe_whisper_ondevice(audio_file):
+    print("Using Local Whisper to transcribe audio file.")
     whisper_model = get_env_var("WHISPER_MODEL")
     model = whisper.load_model(whisper_model, in_memory=True)
-    return model.transcribe(audio_file, verbose=False)["text"]
+    a = model.transcribe(audio_file, verbose=False)
+    result = a["text"]
+    return result
+

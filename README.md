@@ -6,8 +6,12 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 
 ### Stack
 
-- OpenAI
-- Whisper (On-Device)
+#### LLM
+   - OpenAI
+
+#### Speech to Text
+   - Whisper (Openai API) [DEFAULT]
+   - Whisper (On-Device)
 
 ### Current Solutions
 

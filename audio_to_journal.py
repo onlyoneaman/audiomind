@@ -1,5 +1,4 @@
 import time
-import os
 
 from langchain.chains.summarize import load_summarize_chain
 from langchain.docstore.document import Document
@@ -7,15 +6,15 @@ from langchain.prompts import PromptTemplate
 
 from prompts import PROMPT_TEMPLATES
 
-from util import load_config, person_info, store_results, get_args, get_env_var
+from util import load_config, person_info, store_results, get_args, get_env_var, get_main_file_name
 from helpers.audio_utils import transcribe_and_store
 from helpers.llm_util import get_text_splitter, initialize_llm
 
 
-def transcribe_file(audio_file, transcript_file, transcript_dir):
+def transcribe_file(audio_file):
     start_time = time.time()
     print("Started transcribing...")
-    transcript = transcribe_and_store(audio_file, transcript_file, transcript_dir)
+    transcript = transcribe_and_store(audio_file)
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Transcribing Done. Time taken: {elapsed_time:.2f} seconds")
@@ -68,7 +67,7 @@ def summarize(
     return summary_text
 
 
-def summarize_doc(llm, transcript, person_details, base_name):
+def summarize_doc(llm, transcript, person_details):
     # Start the timer
     start_time = time.time()
 
@@ -89,16 +88,17 @@ def summarize_doc(llm, transcript, person_details, base_name):
     print(f"Generated Title. Time taken: {elapsed_time:.2f}s")
     print("Title, description: ", title_description)
 
-    result_filename = store_results(base_name, title_description, summary)
-
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Summarizing Done. Time taken: {elapsed_time:.2f} seconds")
-    return result_filename
+    return {
+        "title_description": title_description,
+        "summary": summary,
+    }
 
 
 def check():
-    main_envs = ["AUDIO_FILE", "AUDIO_DIR", "TRANSCRIPT_DIR", "WHISPER_MODEL", "OPENAI_MODEL", "RESULTS_DIR"]
+    main_envs = ["AUDIO_FILE", "TRANSCRIPT_DIR", "WHISPER_MODEL", "OPENAI_MODEL", "RESULTS_DIR"]
     return [env for env in main_envs if get_env_var(env, check_exists=True) is None]
 
 
@@ -109,19 +109,20 @@ def main():
         check()
         start_time = time.time()
         main_file_name = get_env_var("AUDIO_FILE")
-        transcript_dir = get_env_var("TRANSCRIPT_DIR")
-        audio_dir = get_env_var("AUDIO_DIR")
-        audio_file = f"./{audio_dir}/{main_file_name}"
-        base_name = os.path.splitext(os.path.basename(main_file_name))[0]
-        transcript_filename = f"./{transcript_dir}/{audio_dir}_{base_name}.txt"
+        audio_file = f"./{main_file_name}"
+        main_base = get_main_file_name(main_file_name)
 
         print("Started processing...")
         llm = initialize_llm()
         details = person_info()
 
-        transcript = transcribe_file(audio_file, transcript_filename, transcript_dir)
+        transcript = transcribe_file(audio_file)
 
-        result_filename = summarize_doc(llm, transcript, details, base_name)
+        results = summarize_doc(llm, transcript, details)
+        title_description = results["title_description"]
+        summary = results["summary"]
+
+        result_filename = store_results(main_base, title_description, summary)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
