@@ -40,14 +40,14 @@ def store_results(basename, title_description, summary):
 
 def get_args():
     parser = argparse.ArgumentParser(description='Process some flags for the script.')
-    parser.add_argument('--main_file_name', help='The main file name to process')
+    parser.add_argument('--file', help='The main file name to process')
     parser.add_argument('--audio_dir', help='The directory where audio files are stored')
     parser.add_argument('--transcript_dir', help='The directory where transcripts will be saved')
     parser.add_argument('--whisper_model', help='The whisper model to use')
     parser.add_argument('--openai_model', help='The AI model to use')
     args = parser.parse_args()
-    if args.main_file_name is not None:
-        os.environ["AUDIO_FILE"] = args.main_file_name
+    if args.file is not None:
+        os.environ["AUDIO_FILE"] = args.file
     if args.audio_dir is not None:
         os.environ["AUDIO_DIR"] = args.audio_dir
     if args.transcript_dir is not None:

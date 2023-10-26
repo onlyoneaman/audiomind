@@ -86,7 +86,26 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 
 ## Usage
 
-Place the audio files in the `/exmaples` folder and run the `audio_to_journal.py` script. The script will transcribe the audio, summarize it, and generate a title and description.
+Place the audio files in the `/exmaples` folder and run the `audio_to_journal.py` script. The script will transcribe the audio and summarize it.
+
+```bash
+python audio_to_journal.py --file examples/1.mp3
+```
+
+You can add some information about yourself in `person.txt` file.
+Audiomind will use this information too while creating the journal entry.
+
+### Roadmap
+
+- [x] Transcribe audio files to text.
+- [x] Summarize the transcribed text.
+- [x] Easy to integrate and use.
+- [x] Get Insights from any audio file, including podcasts , interviews, lectures, etc.
+- [X] Create a journal entry from your voice note.
+- [ ] Improve the journal entry.
+- [ ] Create a summary of a podcast episode.
+- [ ] Create a summary of a lecture.
+- [ ] Create a summary of a meeting.
 
 ## Contributing
 
