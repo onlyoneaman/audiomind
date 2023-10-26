@@ -4,6 +4,11 @@
 
 AudioMind is a Python-based solution designed to extract meaningful insights from audio files. By leveraging whisper and LLMs, the platform transcribes and summarizes audio content, making it easier to derive actionable information.
 
+### Stack
+
+- OpenAI
+- Whisper (On-Device)
+
 ### Current Solutions
 
 - Create a journal entry from your voice note.
