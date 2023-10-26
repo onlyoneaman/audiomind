@@ -10,3 +10,5 @@ RESULTS_DIR: "results"
 DREAMBOAT_BASE_URL: "https://dev.dreamboat.ai/v1/proxy"
 
 USER_FILE: "person.txt"
+
+FORCE_TRANSCRIPT: "false"

@@ -16,12 +16,13 @@ def transcribe_and_store(audio_file, transcript_file, transcript_folder):
 
 
 def transcribe(audio_file, transcript_file):
-    if os.path.exists(transcript_file):
-        with open(transcript_file, "r") as f:
-            transcript = f.read()
-            if len(transcript) > 0:
-                print("Transcript found.")
-                return transcript
+    if get_env_var("FORCE_TRANSCRIPT") != "true":
+        if os.path.exists(transcript_file):
+            with open(transcript_file, "r") as f:
+                transcript = f.read()
+                if len(transcript) > 0:
+                    print("Transcript found.")
+                    return transcript
     if not os.path.exists(audio_file):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), audio_file)
     whisper_model = get_env_var("WHISPER_MODEL")
