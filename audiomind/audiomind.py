@@ -45,6 +45,7 @@ class AudioMind:
         self.transcript = None
         self.summary = None
         self.title_description = None
+        self.setup()
 
 
     @classmethod
@@ -59,18 +60,18 @@ class AudioMind:
         """
         load_config()
 
-    def get_main_file_name(self):
-        main_file = os.path.splitext(os.path.basename(self.file))[0]
+    @staticmethod
+    def get_main_file_name(file_name):
+        main_file = os.path.splitext(os.path.basename(file_name))[0]
         return main_file
 
     def setup(self):
         self.llm = initialize_llm()
         self.person_details = person_info()
         self.audio_file = f"./{self.file}"
-        self.base_name = self.get_main_file_name()
+        self.base_name = self.get_main_file_name(self.file)
 
     def process(self):
-        self.setup()
         print('Starting...')
         try:
             start_time = time.time()

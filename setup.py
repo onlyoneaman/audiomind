@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'audiomind=audiomind.audiomind.main'
+            'audiomind=audiomind.main'
         ]
     }
 )
