@@ -1,8 +1,9 @@
-import openai
 from dotenv import load_dotenv
+import openai
 import os
 import argparse
 import yaml
+import pkg_resources
 
 
 def get_env_var(var_name, check_exists=False):
@@ -48,16 +49,19 @@ def load_yaml_config(file_path):
 
 def load_config():
     load_dotenv()
-    openai.api_key = get_env_var("OPENAI_API_KEY")
+    setup_openai()
     try:
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        config_path = os.path.join(current_dir, 'helpers', 'config.yaml')
+        config_path = pkg_resources.resource_filename(__name__, 'helpers/config.yaml')
         config = load_yaml_config(config_path)
         for key, value in config.items():
             os.environ.setdefault(key, value)
     except Exception as e:
         print(e)
         print("Error loading config file.")
+
+
+def setup_openai():
+    openai.api_key = get_env_var("OPENAI_API_KEY")
 
 
 def check():

@@ -1,4 +1,4 @@
-from audiomind.audiomind import AudioMind
+from .audiomind import AudioMind
 
 
 def main():

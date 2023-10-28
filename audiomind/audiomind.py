@@ -29,7 +29,6 @@ class AudioMind:
             :param whisper_api: Flag to use Whisper API.
         """
         self.load_configuration()
-        load_config()
         args = get_args()
         self.file = self.set_env_if_value("AUDIO_FILE", file or args.file)
         self.transcript_dir = self.set_env_if_value("TRANSCRIPT_DIR", transcript_dir or args.transcript_dir)
@@ -52,6 +51,8 @@ class AudioMind:
     def set_env_if_value(cls, env_var, value):
         if value is not None:
             os.environ[env_var] = value
+        else:
+            value = get_env_var(env_var)
         return value
 
     def load_configuration(self):
@@ -85,7 +86,6 @@ class AudioMind:
         except Exception as e:
             print("Error:", e)
 
-
     def transcribe(self):
         start_time = time.time()
         print("Started transcribing...")
@@ -96,7 +96,6 @@ class AudioMind:
 
     def summarize(self):
         start_time = time.time()
-
         print("Started summarizing...")
         local_start_time = time.time()
         summary_prompt_template = PROMPT_TEMPLATES["notes_template"]

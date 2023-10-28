@@ -1,6 +1,9 @@
 -.env.template
 .env
 .venv/
+.main_env/
+.test_env/
+.test2_env/
 *.pyc
 *.pyo
 
