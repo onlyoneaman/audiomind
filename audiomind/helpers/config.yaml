@@ -2,7 +2,7 @@ AUDIO_FILE: "./examples/How-will-AI-change-the-world.mp3"
 TRANSCRIPT_DIR: "transcripts"
 
 WHISPER_MODEL: "base"
-OPENAI_MODEL: "gpt-4"
+OPENAI_MODEL: "gpt-3.5-turbo-16k"
 
 RESULTS_DIR: "results"
 

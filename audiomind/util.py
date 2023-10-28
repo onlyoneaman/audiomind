@@ -1,7 +1,6 @@
 import openai
 from dotenv import load_dotenv
 import os
-import time
 import argparse
 import yaml
 
@@ -30,20 +29,6 @@ def person_info(person_file=None):
         return None
 
 
-def store_results(basename, title_description, summary):
-    results_folder = get_env_var("RESULTS_DIR")
-    os.makedirs(results_folder, exist_ok=True)
-    filename = f"{results_folder}/{int(time.time())}_{basename}.md"
-    with open(filename, "w") as f:
-        f.write(f"{title_description}\n\n{summary}\n")
-    return filename
-
-
-def get_main_file_name(audio_file):
-    main_file = os.path.splitext(os.path.basename(audio_file))[0]
-    return main_file
-
-
 def get_args():
     parser = argparse.ArgumentParser(description='Process some flags for the script.')
     parser.add_argument('--file', help='The main file name to process')
@@ -53,18 +38,6 @@ def get_args():
     parser.add_argument('--force_transcript', help='Force transcript generation')
     parser.add_argument('--whisper_api', help='Use the whisper API')
     args = parser.parse_args()
-    if args.file is not None:
-        os.environ["AUDIO_FILE"] = args.file
-    if args.transcript_dir is not None:
-        os.environ["TRANSCRIPT_DIR"] = args.transcript_dir
-    if args.whisper_model is not None:
-        os.environ["WHISPER_MODEL"] = args.whisper_model
-    if args.openai_model is not None:
-        os.environ["OPENAI_MODEL"] = args.openai_model
-    if args.force_transcript is not None:
-        os.environ["FORCE_TRANSCRIPT"] = args.force_transcript
-    if args.whisper_api is not None:
-        os.environ["USE_WHISPER_API"] = args.whisper_api
     return args
 
 
@@ -77,9 +50,16 @@ def load_config():
     load_dotenv()
     openai.api_key = get_env_var("OPENAI_API_KEY")
     try:
-        config = load_yaml_config('./helpers/config.yaml')
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        config_path = os.path.join(current_dir, 'helpers', 'config.yaml')
+        config = load_yaml_config(config_path)
         for key, value in config.items():
             os.environ.setdefault(key, value)
     except Exception as e:
         print(e)
         print("Error loading config file.")
+
+
+def check():
+    main_envs = ["AUDIO_FILE", "TRANSCRIPT_DIR", "WHISPER_MODEL", "OPENAI_MODEL", "RESULTS_DIR"]
+    return [env for env in main_envs if get_env_var(env, check_exists=True) is None]

@@ -1,5 +1,5 @@
 import os
-from util import get_env_var
+from audiomind.util import get_env_var
 import errno
 
 from langchain.chat_models import ChatOpenAI

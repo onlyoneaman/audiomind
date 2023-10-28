@@ -3,9 +3,9 @@ import errno
 import whisper
 import json
 import openai
-
-from util import get_env_var, get_main_file_name
 from pydub.utils import mediainfo
+
+from audiomind.util import get_env_var
 
 
 def get_audio_length(audio_file):
@@ -24,11 +24,10 @@ def calculate_transcription_cost(audio_file):
     return total_cost
 
 
-def transcribe_and_store(audio_file):
+def transcribe_and_store(audio_file, base_name):
     transcript_dir = get_env_var("TRANSCRIPT_DIR")
     os.makedirs(transcript_dir, exist_ok=True)
-    main_file = get_main_file_name(audio_file)
-    transcript_file = f"./{transcript_dir}/{main_file}.txt"
+    transcript_file = f"./{transcript_dir}/{base_name}.txt"
     transcript = transcribe(audio_file, transcript_file)
     try:
         with open(transcript_file, "w") as f:
