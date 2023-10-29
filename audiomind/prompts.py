@@ -83,8 +83,9 @@ Use Markdown. Add ## for section titles.
 
     "title_description_template": """
 I will give you notes in the form of a summary. It can be a journal entry, meeting notes or something else.
-notes are divided into sections with bullet points with every section being a key point discussed in the notes.
-Finally, it can consist of a list of action items / to-dos. Dont give action items and to-dos any priority in the title and description.
+notes can be divided into sections with bullet points with every section being a key point discussed in the notes.
+Finally, it can consist of a list of action items / to-dos. 
+Dont give action items and to-dos any priority in the title and description.
 Your job is to generate single title and description for the notes.
 write a short title and description, separate both by \n\n
 Keep the title as short as possible, and make it a single line. Keep title below 100 characters.

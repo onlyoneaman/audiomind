@@ -72,12 +72,21 @@ class AudioMind:
         self.audio_file = self.file
         self.base_name = self.get_main_file_name(self.file)
 
-    def process(self):
+    def summarize(self):
+        self.process()
+
+    def journal(self):
+        self.process(process_type="journal")
+
+    def meeting(self):
+        self.process(process_type="meeting")
+
+    def process(self, process_type="summary"):
         print('Starting...')
         try:
             start_time = time.time()
             self.transcribe()
-            self.summarize()
+            self.final_process(process_type)
             result_filename = self.save_results()
             end_time = time.time()
             elapsed = end_time - start_time
@@ -85,6 +94,12 @@ class AudioMind:
             print(f"Wrote results to {result_filename}")
         except Exception as e:
             print("Error:", e)
+
+    def final_process(self, process_type="summary"):
+        if process_type == "journal":
+            self.process_summarize()
+        else:
+            self.process_summarize(main_template="summary_template")
 
     def transcribe(self):
         start_time = time.time()
@@ -94,11 +109,11 @@ class AudioMind:
         elapsed_time = end_time - start_time
         print(f"Transcribing Done. Time taken: {elapsed_time:.2f} seconds")
 
-    def summarize(self):
+    def process_summarize(self, main_template="notes_template"):
         start_time = time.time()
         print("Started summarizing...")
 
-        summary_prompt_template = PROMPT_TEMPLATES["notes_template"]
+        summary_prompt_template = PROMPT_TEMPLATES[main_template]
         variables = get_variables(summary_prompt_template)
         self.summary = self.llm_call(summary_prompt_template, variables=variables, chain_type="map_reduce")
 
