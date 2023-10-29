@@ -32,7 +32,21 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 - Python 3.x
 - pip
 
-### Steps
+### Use [PIP](https://pypi.org/project/audiomind/0.2.0/) Package (Recommended)
+
+```bash
+pip install audiomind
+```
+
+```python
+from audiomind import AudioMind
+
+audiomind = AudioMind()
+audiomind.process(file="examples/1.mp3")
+```
+
+
+### Steps to Install
 
 1. **Clone the Repository**
 
@@ -85,7 +99,7 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 5. **Run the Application**
 
     ```bash
-    python main.py
+    python3 -m audiomind
     ```
 
 ## Usage
@@ -93,7 +107,7 @@ AudioMind is a Python-based solution designed to extract meaningful insights fro
 Place the audio files in the `/exmaples` folder and run the `audio_to_journal.py` script. The script will transcribe the audio and summarize it.
 
 ```bash
-python main.py --file examples/1.mp3
+python3 -m audiomind --file examples/1.mp3
 ```
 
 You can add some information about yourself in `person.txt` file.
