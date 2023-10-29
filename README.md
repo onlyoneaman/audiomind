@@ -1,5 +1,14 @@
 # AudioMind
 
+#### This repository is currently under rapid development. Please check back later.
+
+[![PyPI version](https://badge.fury.io/py/audiomind.svg)](https://badge.fury.io/py/audiomind)
+[![Downloads](https://pepy.tech/badge/audiomind)](https://pepy.tech/project/audiomind)
+[![Downloads](https://pepy.tech/badge/audiomind/month)](https://pepy.tech/project/audiomind/month)
+[![Downloads](https://pepy.tech/badge/audiomind/week)](https://pepy.tech/project/audiomind/week)
+
+[![GitHub license](https://img.shields.io/github/license/onlyoneaman/audiomind)](
+
 ## Overview
 
 AudioMind is a Python-based solution designed to extract meaningful insights from audio files. By leveraging whisper and LLMs, the platform transcribes and summarizes audio content, making it easier to derive actionable information.
