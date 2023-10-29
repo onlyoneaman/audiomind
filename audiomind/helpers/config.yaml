@@ -1,4 +1,4 @@
-AUDIO_FILE: "./examples/How-will-AI-change-the-world.mp3"
+AUDIO_FILE: "examples/How-will-AI-change-the-world.mp3"
 TRANSCRIPT_DIR: "transcripts"
 
 WHISPER_MODEL: "base"

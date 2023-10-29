@@ -4,7 +4,7 @@ from typing import Optional
 
 from audiomind.prompts import PROMPT_TEMPLATES
 
-from audiomind.util import get_args, load_config, check, person_info, get_env_var
+from audiomind.util import get_args, load_config, check, person_info, get_env_var, get_default_audio_file
 from audiomind.helpers.llm_util import initialize_llm
 from audiomind.helpers.audio_utils import transcribe_and_store
 from audiomind.helpers.summarize import summarize_text
@@ -30,7 +30,7 @@ class AudioMind:
         """
         self.load_configuration()
         args = get_args()
-        self.file = self.set_env_if_value("AUDIO_FILE", file or args.file)
+        self.file = file or args.file or get_default_audio_file()
         self.transcript_dir = self.set_env_if_value("TRANSCRIPT_DIR", transcript_dir or args.transcript_dir)
         self.whisper_model = self.set_env_if_value("WHISPER_MODEL", whisper_model or args.whisper_model)
         self.openai_model = self.set_env_if_value("OPENAI_MODEL", openai_model or args.openai_model)
@@ -69,7 +69,7 @@ class AudioMind:
     def setup(self):
         self.llm = initialize_llm()
         self.person_details = person_info()
-        self.audio_file = f"./{self.file}"
+        self.audio_file = self.file
         self.base_name = self.get_main_file_name(self.file)
 
     def process(self):

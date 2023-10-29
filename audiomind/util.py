@@ -16,6 +16,10 @@ def get_env_var(var_name, check_exists=False):
     return var_value
 
 
+def get_default_audio_file():
+    return pkg_resources.resource_filename(__name__, get_env_var("AUDIO_FILE"))
+
+
 def person_info(person_file=None):
     try:
         if person_file is None:
