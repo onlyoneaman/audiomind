@@ -5,7 +5,7 @@ from typing import Optional
 from audiomind.prompts import PROMPT_TEMPLATES
 
 from audiomind.util import get_args, load_config, check, person_info, get_env_var, get_default_audio_file
-from audiomind.helpers.llm_util import initialize_llm
+from audiomind.helpers.llm_util import initialize_llm, get_variables
 from audiomind.helpers.audio_utils import transcribe_and_store
 from audiomind.helpers.summarize import summarize_text
 
@@ -97,23 +97,27 @@ class AudioMind:
     def summarize(self):
         start_time = time.time()
         print("Started summarizing...")
-        local_start_time = time.time()
+
         summary_prompt_template = PROMPT_TEMPLATES["notes_template"]
-        self.summary = summarize_text(self.llm, self.transcript, self.person_details, summary_prompt_template)
+        variables = get_variables(summary_prompt_template)
+        self.summary = self.llm_call(summary_prompt_template, variables=variables, chain_type="map_reduce")
 
-        elapsed_time = time.time() - local_start_time
-        print(f"Generated Summary. Time taken: {elapsed_time:.2f}s")
-
-        local_start_time = time.time()
         title_prompt_template = PROMPT_TEMPLATES["title_description_template"]
-        self.title_description = summarize_text(self.llm, self.summary, self.person_details, title_prompt_template,
-                                           chain_type="map_reduce",variables=["text"])
-
-        elapsed_time = time.time() - local_start_time
-        print(f"Generated Title. Time taken: {elapsed_time:.2f}s")
+        variables = get_variables(title_prompt_template)
+        self.title_description = self.llm_call(title_prompt_template, variables=variables, chain_type="map_reduce")
 
         final_elapsed_time = time.time() - start_time
         print(f"Summarizing Done. Time taken: {final_elapsed_time:.2f} seconds")
+        return 1
+
+    def llm_call(self, template, variables=None, chain_type="map_reduce"):
+        start_time = time.time()
+        text = summarize_text(self.llm, self.transcript, self.person_details, template, variables=variables
+                              ,chain_type=chain_type)
+
+        elapsed_time = time.time() - start_time
+        print(f"Time taken: {elapsed_time:.2f}s")
+        return text
 
     def save_results(self):
         results_folder = get_env_var("RESULTS_DIR")

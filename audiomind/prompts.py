@@ -1,5 +1,5 @@
 PROMPT_TEMPLATES = {
-    "summary_template": """Based on the provided transcript which is unstructured and chaotic, generate a detailed recap in bullet-point format. 
+    "summary_template_old": """Based on the provided transcript which is unstructured and chaotic, generate a detailed recap in bullet-point format. 
     Capture all the topics discussed exhaustively. 
     Group the bullet points into sections only if the topics naturally fall under a specific category. 
     If possible, include examples to highlight key points discussed.
@@ -8,6 +8,11 @@ Transcript:
 {text}
 
 Use Markdown. Add ## for section titles.""",
+
+    "summary_template": """
+    Briefly summarize the key takeaways from this transcript without directly repeating any of its content verbatim.
+    Please only provide the summary without any additional information.\n\nTranscript: {text}\n\nSummary:
+    """,
 
 "notes_template": """
 You are an expert copywriter. People gives you transcripts of their voice notes and you have to convert them into meaningful notes.

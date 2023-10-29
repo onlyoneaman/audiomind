@@ -40,7 +40,7 @@ def summarize_docs(
 
 def summarize_text(
         llm, message: str, person_details: str, prompt_template: str,
-        chain_type: str = "stuff", variables: list = ["text", "details"]
+        chain_type: str = "stuff", variables: list = ["text"]
         ) -> str:
     docs = make_docs(message)
     summary_text = summarize_docs(

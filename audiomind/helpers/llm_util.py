@@ -32,6 +32,12 @@ def initialize_llm():
     return ChatOpenAI(**kwargs)
 
 
+def get_variables(template):
+    variables = [variable for variable in template.split("{") if "}" in variable]
+    variables = list(set([variable.split("}")[0].lower() for variable in variables]))
+    return variables
+
+
 def load_transcript(transcript_file):
     if not os.path.exists(transcript_file):
         print("Error: Transcript file does not exist.")
