@@ -1,13 +1,15 @@
 # AudioMind
 
-#### This repository is currently under rapid development. Please check back later.
+#### Star the repository if this was useful. ⭐️
+
+#### This repository is currently under rapid development. Breaking changes may occur frequently.
 
 [![PyPI version](https://badge.fury.io/py/audiomind.svg)](https://badge.fury.io/py/audiomind)
 [![Downloads](https://pepy.tech/badge/audiomind)](https://pepy.tech/project/audiomind)
 [![Downloads](https://pepy.tech/badge/audiomind/month)](https://pepy.tech/project/audiomind/month)
 [![Downloads](https://pepy.tech/badge/audiomind/week)](https://pepy.tech/project/audiomind/week)
 
-[![GitHub license](https://img.shields.io/github/license/onlyoneaman/audiomind)](
+![GitHub license](https://img.shields.io/github/license/onlyoneaman/audiomind)
 
 ## Overview
 
